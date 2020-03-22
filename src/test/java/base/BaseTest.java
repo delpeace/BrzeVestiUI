@@ -11,12 +11,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class BaseTest {
+    
+    protected static WebDriver driver;
+    protected static WebDriverWait wait;
     
     public BaseTest() {
     }
@@ -26,29 +30,20 @@ public class BaseTest {
         Configuration.init();
         System.setProperty("webdriver.chrome.driver", Configuration.chromeDriverPath);
         driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 4);
+        wait = new WebDriverWait(driver, 5);
+        
         driver.manage().window().maximize();
-        driver.get("http://bvtest.school.cubes.rs/login");
+        driver.get(Configuration.adminLoginUrl);
         
-        //Login start
-        WebElement emailField = driver.findElement(By.name("email"));
-        emailField.sendKeys(Configuration.validEmail);
-        
-        WebElement passwordField = driver.findElement(By.name("password"));
-        passwordField.sendKeys(Configuration.validPassword);
-        
-        WebElement loginButton = driver.findElement(By.className("btn-primary"));
-        loginButton.click();
-        //Login end
     }
     
    
         
     @AfterClass
     public static void tearDownClass() throws InterruptedException {
-        Thread.sleep(3000);
+        Thread.sleep(4000);
         driver.quit();
     }
 
-    
+
 }

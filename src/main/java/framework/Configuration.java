@@ -8,6 +8,7 @@ import java.util.Properties;
 
 public class Configuration {
     public static String chromeDriverPath;
+    public static String adminLoginUrl;
     public static String validEmail;
     public static String validPassword;
     
@@ -17,6 +18,7 @@ public class Configuration {
         prop.load(fis);
         
         chromeDriverPath = prop.getProperty("chromeDriverPath");
+        adminLoginUrl = prop.getProperty("adminLoginUrl");
         validEmail = prop.getProperty("validEmail");
         validPassword = prop.getProperty("validPassword");
     }
