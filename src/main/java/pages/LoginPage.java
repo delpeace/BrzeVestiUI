@@ -3,19 +3,22 @@ package pages;
 import framework.Configuration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 public class LoginPage {
     
     private WebDriver driver;
+    private WebDriverWait wait;
     
     private final By emailFieldLocator = By.name("email");
     private final By passwordFieldLocator = By.name("password");
     private final By loginButtonLocator = By.className("btn-primary");
     private final By rememberMeCheckBoxLocator = By.name("remember");
     
-    public LoginPage(WebDriver driver) {
+    public LoginPage(WebDriver driver, WebDriverWait wait) {
         this.driver = driver; 
+        this.wait = wait;
     }
     
     private void setValidEmail() {
@@ -43,17 +46,19 @@ public class LoginPage {
     }
     
     
-    public void login() {
+    public DashboardPage login() {
         setValidEmail();
         setValidPassword();
         clickLoginButton();
+        return new DashboardPage(driver, wait);
     }
     
-    public void loginWithRememberMe() {
+    public DashboardPage loginWithRememberMe() {
         setValidEmail();
         setValidPassword();
         clickRememberMe();
         clickLoginButton();
+        return new DashboardPage (driver, wait);
 
     }
     

@@ -15,12 +15,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.DashboardPage;
+import pages.LoginPage;
 
 
 public class BaseTest {
     
     protected static WebDriver driver;
     protected static WebDriverWait wait;
+    protected static DashboardPage dashboardPage;
     
     public BaseTest() {
     }
@@ -35,6 +38,9 @@ public class BaseTest {
         driver.manage().window().maximize();
         driver.get(Configuration.adminLoginUrl);
         
+        LoginPage loginPage = new LoginPage(driver, wait);
+        dashboardPage = loginPage.login();
+        
     }
     
    
@@ -45,5 +51,7 @@ public class BaseTest {
         driver.quit();
     }
 
-
+    
+    
+    
 }

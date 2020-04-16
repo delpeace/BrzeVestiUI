@@ -1,8 +1,8 @@
 
 package regions;
 
-import static categories.CategoriesTest.driver;
-import static categories.CategoriesTest.wait;
+//import static categories.CategoriesTest.driver;
+//import static categories.CategoriesTest.wait;
 import framework.Configuration;
 import java.io.IOException;
 import org.junit.After;
