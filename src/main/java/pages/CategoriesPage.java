@@ -25,10 +25,10 @@ public class CategoriesPage extends AdminPage {
         private By categoriesTable = By.xpath("//*[@id=\"categoriesTable\"]/tbody");
         private By tableRow = By.tagName("tr");
         //private By tdCategory = By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[1]/td[3]");
-        private By alertBox = By.className("alert");
+        public By alertBox = By.className("alert");
         public By firstCategoryTitleTd = By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[1]/td[3]");
-        public By reorderFrom = By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[1]/td[1]/span");
-        public By reorderTo = By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[8]");
+       // public By reorderFrom = By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[1]/td[1]/span");
+        //public By reorderTo = By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[8]");
 
 
 //    private WebDriver driver;
@@ -53,7 +53,17 @@ public class CategoriesPage extends AdminPage {
         
         public void backToCategories() {
             wait.until(ExpectedConditions.elementToBeClickable(backToCategoriesButton)).click();
-        }        
+        }  
+        
+        public boolean isAlertBoxPresent() {
+            try {
+              driver.findElement(alertBox);
+              return true;
+            }
+          catch (org.openqa.selenium.NoSuchElementException e) {
+              return false;
+            }
+        }
         
         public void saveNewCategory() {
            wait.until(ExpectedConditions.elementToBeClickable(saveCategoryButton)).click();
@@ -64,21 +74,17 @@ public class CategoriesPage extends AdminPage {
         }
         
         
-        //Trying to figure out reordering
-        
-        
-         //Using Action class for drag and drop.		
-         Actions act=new Actions(driver);					
+        //WebElemens for reordering first category
+        public WebElement reorderFrom = driver.findElement(By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[1]/td[1]/span"));
 
-	//Dragged and dropped.		
-        act.dragAndDrop(reorderFrom, reorderTo).build().perform();
+        public WebElement reorderTo = driver.findElement(By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[9]"));
         
-      //  public class Actions {
-      //      Actions act = new Actions(driver);
-            
-      //     act.dragAndDrop(reorderFrom,reorderTo).build().perform();
-      //  }
-        
+        //WebElements for reordering sixth category
+         public WebElement reorderFrom2 = driver.findElement(By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[6]/td[1]/span"));
+
+        public WebElement reorderTo2 = driver.findElement(By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[1]"));
+       
+                
         public String getNewCategoryName() {
             return driver.findElement(categoryTitleField).getText();
         }
@@ -89,8 +95,6 @@ public class CategoriesPage extends AdminPage {
               
         public String getFirstCategoryTitleTd() {
             return driver.findElement(firstCategoryTitleTd).getText();
-            //wait.until(ExpectedConditions.visibilityOfElementLocated(firstCategoryTitleTd)).getText();
-            //return this.getFirstCategoryTitleTd();
         }
                 
 
@@ -128,37 +132,30 @@ public class CategoriesPage extends AdminPage {
             String category = getCategoryFromRow(firstRow);
             
             this.clickOnEditButtton(firstRow);
-            this.clearTitleField();
-            
-   //        String newTitle = getFirstCategoryTitleTd();
-            
+            this.clearTitleField();          
             this.enterCategoryName();
             this.saveNewCategory();
             return category;
         }
         
+        public String editFirstCategoryWithoutSaving() {
+            List<WebElement> rows = this.getAllRows();
+            if (rows.size() == 0){
+                return "";
+            }
+            WebElement firstRow = rows.get(0);
+            String category = getCategoryFromRow(firstRow);
             
-       
-        
-//        WebElement editFirstCategoryButton = driver.findElement(By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[1]/td[5]/div/a"));
-//        editFirstCategoryButton.click();
-//        
-//        WebElement titleField = driver.findElement(By.id("title"));
-//        titleField.clear();
-//        String newTitle = Helper.getRandomText();
-//        titleField.sendKeys(newTitle);
-//        
-//        WebElement saveCategoryButton = driver.findElement(By.id("save-category-button"));
-//        saveCategoryButton.click();
-//        
-//        WebElement firstCategoryTitleTd = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"categoriesTable\"]/tbody/tr[1]/td[3]")));
-//        
-//        assertEquals("Titles don't match", newTitle, firstCategoryTitleTd.getText()); 
-//  
+            this.clickOnEditButtton(firstRow);
+            this.clearTitleField();          
+            this.enterCategoryName();
+            this.backToCategories();
+            return "";
+        }
+
         
         
-        
-        private String getCategoryFromRow(WebElement row) {
+        public String getCategoryFromRow(WebElement row) {
             return row.findElement(By.xpath(".//td[3]")).getText();
         }
         
@@ -190,69 +187,96 @@ public class CategoriesPage extends AdminPage {
             wait.until(ExpectedConditions.elementToBeClickable(confirmDeleteButton)).click();
         }
         
+       
+        public String getStatusValuesOfCategory(WebElement row) {
+            return row.findElement(By.xpath(".//td[4]/span")).getText();
+        }
+        
+//  First try to check statuses and enable/disable categories
+//        public WebElement statusField = driver.findElement(By.xpath(".//td[4]/span"));
+//        
+//        
+//        public String disableFirstCategory() {
+//            List<WebElement> rows = this.getAllRows();
+//            if ("E".equals(statusField.getText())){
+//                WebElement firstRow = rows.get(0);
+//                String category = getCategoryFromRow(firstRow);
+//            
+//             this.clickOnDisableButton(firstRow);
+//                this.confirmDisable();
+//                return category;
+//            } return "";
+//        }
+
+           
+        
         public String disableFirstCategory() {
             List<WebElement> rows = this.getAllRows();
-            if (rows.size() == 0){
-                return "";
-            }
             WebElement firstRow = rows.get(0);
             String category = getCategoryFromRow(firstRow);
-            
-            this.clickOnDisableButton(firstRow);
-            this.confirmDisable();
-            return category;
+            if ("E".equals(getStatusValuesOfCategory(firstRow))){         
+                this.clickOnDisableButton(firstRow);
+                this.confirmDisable();
+                return category;
+            } return "";
         }
-        
+            
         public String enableFirstCategory() {
             List<WebElement> rows = this.getAllRows();
-            if (rows.size() == 0){
-                return "";
-            }
             WebElement firstRow = rows.get(0);
             String category = getCategoryFromRow(firstRow);
-            
-            this.clickOnEnableButton(firstRow);
-            this.confirmEnable();
-            return category;
+            if ("D".equals(getStatusValuesOfCategory(firstRow))){          
+                this.clickOnEnableButton(firstRow);
+                this.confirmEnable();
+                return category;
+            } return "";
         }
         
-            public String disableLastCategory() {
+        public String disableLastCategory() {
             List<WebElement> rows = this.getAllRows();
-            if (rows.size() == 0){
-                return "";
-            }
             WebElement lastRow = rows.get(rows.size() - 1);
             String category = getCategoryFromRow(lastRow);
-            
-            this.clickOnDisableButton(lastRow);
-            this.confirmDisable();
-            return category;
+            if ("E".equals(getStatusValuesOfCategory(lastRow))){
+                this.clickOnDisableButton(lastRow);
+                this.confirmDisable();
+                return category;
+            } return "";
         }
+                            
         
         public String enableLastCategory() {
             List<WebElement> rows = this.getAllRows();
-            if (rows.size() == 0){
-                return "";
-            }
             WebElement lastRow = rows.get(rows.size() - 1);
             String category = getCategoryFromRow(lastRow);
-            
-            this.clickOnEnableButton(lastRow);
-            this.confirmEnable();
-            return category;
+            if ("D".equals(getStatusValuesOfCategory(lastRow))){
+                this.clickOnEnableButton(lastRow);
+                this.confirmEnable();
+                return category;
+            } 
+                return "";
         }
+                
         
         public String disableRandomCategory() {
             List<WebElement> rows = this.getAllRows();
-            if (rows.size() == 0){
-                return "";
-            }
-           WebElement randomRow = rows.get(Helper.getRandomInteger2(rows.size() - 1));
+            WebElement randomRow = rows.get(Helper.getRandomInteger2(rows.size() - 1));
             String category = getCategoryFromRow(randomRow);
-            
-            this.clickOnDisableButton(randomRow);
-            this.confirmDisable();
-            return category;
+            if ("E".equals(getStatusValuesOfCategory(randomRow))){
+                this.clickOnDisableButton(randomRow);
+                this.confirmDisable();
+                return category;
+            } return "";
+        }
+        
+        public String enableRandomCategory() {
+            List<WebElement> rows = this.getAllRows();
+            WebElement randomRow = rows.get(Helper.getRandomInteger2(rows.size() - 1));
+            String category = getCategoryFromRow(randomRow);
+             if ("D".equals(getStatusValuesOfCategory(randomRow))){
+                this.clickOnEnableButton(randomRow);
+                this.confirmEnable();
+                return category;
+            } return "";
         }
         
         public String deleteFirstCategory() {

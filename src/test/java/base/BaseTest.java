@@ -36,6 +36,7 @@ public class BaseTest {
         wait = new WebDriverWait(driver, 5);
         
         driver.manage().window().maximize();
+        
         driver.get(Configuration.adminLoginUrl);
         
         LoginPage loginPage = new LoginPage(driver, wait);

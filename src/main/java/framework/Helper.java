@@ -16,6 +16,10 @@ public class Helper {
         return "category-milica-" + getRandomInteger();
     }
     
+    public static String getRandomRegionText() {
+        return "region-milica-" + getRandomInteger();
+    }
+    
     public static String getRandomEmail() {
         return getRandomText() + "@gmail.com";
     }

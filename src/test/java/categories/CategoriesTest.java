@@ -26,14 +26,14 @@ import pages.PortalsPage;
 import pages.RegionsPage;
 import pages.SignaturesPage;
 import pages.SourcesPage;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.Action;
+import pages.LoginPage;
+import org.junit.Assume;
 
 
 public class CategoriesTest extends BaseTest {
-    private CategoriesPage categoriesPage;
-//    //Needs to be static so we can call it from static method
-//    public static WebDriver driver;
-//    public static WebDriverWait wait;
-//    
+    private CategoriesPage categoriesPage;  
     
     
     @Before
@@ -49,7 +49,7 @@ public class CategoriesTest extends BaseTest {
     @Test
     public void testCategoriesLink() {
         categoriesPage.clickOnCategoriesLink();
-        
+               
         assertEquals("Failure - Urls don't match", "http://bvtest.school.cubes.rs/admin/categories", driver.getCurrentUrl());
         assertTrue("Failure - headings don't match", categoriesPage.getPanelHeading().contains("Categories"));
     }
@@ -57,11 +57,12 @@ public class CategoriesTest extends BaseTest {
     //Testing URL for Frontend BrzeVesti link
     @Test
     public void testBrzeVestiLink() {
-        categoriesPage.clickOnBrzeVestiLink();
-        
-        assertEquals("Failure - Urls don't match", "http://bvtest.school.cubes.rs/", driver.getCurrentUrl());     
-    }    
-    
+       categoriesPage.clickOnBrzeVestiLink();
+             
+       assertEquals("Failure - Urls don't match", "http://bvtest.school.cubes.rs/", driver.getCurrentUrl());     
+       driver.get(Configuration.adminLoginUrl); 
+}    
+   
     //Testing heading and URL for Dashboard link
     @Test
     public void testDashboardLink() {
@@ -114,6 +115,11 @@ public class CategoriesTest extends BaseTest {
         categoriesPage.clickOnLogoutLink();
         
         assertEquals("Failure - Urls don't match", "http://bvtest.school.cubes.rs/", driver.getCurrentUrl());
+        driver.get(Configuration.adminLoginUrl);
+    
+          LoginPage loginPage = new LoginPage(driver, wait);
+          dashboardPage = loginPage.login();  
+
     }
     
     
@@ -127,54 +133,86 @@ public class CategoriesTest extends BaseTest {
         assertTrue("Failure - after creation wrong message appears", categoriesPage.getAlertMessage().contains("has been successfully saved"));   
     }
     
-    //Testing Back to Categories button - NE RADI!!!
+    //Testing Back to Categories button
     @Test
     public void backToCategoriesTest() {
         categoriesPage.addCategory();
         categoriesPage.enterCategoryName();
         categoriesPage.backToCategories();
         
-    //    assertFalse("Failure - new category is created", categoriesPage.getAlertMessage().contains("milica"));
- 
-        
-//        List<String> categoryValues = categoriesPage.getCategoryValues();
-//        for(String category : categoryValues) {
-//            assertEquals("Failure - new category is created", category, categoriesPage.getNewCategoryName());
-//        }
-        
+        assertFalse(categoriesPage.isAlertBoxPresent());
+       
+//       assertFalse("Failure - new category is created", categoriesPage.getAlertMessage().contains("milica"));
+      
      }
     
-    //Work in progress - Testing editing first category
+//   
+    //Testing reordering first category
+    @Test
+    public void reorderFirstCategoryTest() {
+
+        Actions actions = new Actions(driver);
+               
+        Action dragAndDrop = actions.clickAndHold(categoriesPage.reorderFrom)
+        .moveToElement(categoriesPage.reorderTo)
+        .release(categoriesPage.reorderTo)
+        .build();
+
+        dragAndDrop.perform();
+    }
+    
+    //Testing reordering sixth category
+    @Test
+    public void reorderSixthCategoryTest() {
+         Actions actions = new Actions(driver);
+               
+        Action dragAndDrop = actions.clickAndHold(categoriesPage.reorderFrom2)
+        .moveToElement(categoriesPage.reorderTo2)
+        .release(categoriesPage.reorderTo2)
+        .build();
+
+        dragAndDrop.perform();
+    }
+    
+    //Testing editing first category
     @Test
     public void editFirstCategoryTest() {
         String categoryToBeEdited = categoriesPage.editFirstCategory(); 
         String categoryName = categoriesPage.getFirstCategoryTitleTd();
                         
-        System.out.println("Stara kategorija: "+ categoryToBeEdited);
-        System.out.println("Nova kategorija: " + categoryName);
+       System.out.println("Stara kategorija: "+ categoryToBeEdited);
+       System.out.println("Nova kategorija: " + categoryName);
+         
+        assertFalse("Category titles match", categoriesPage.getFirstCategoryTitleTd().contains(categoryToBeEdited));                 
+    }    
+    
+    //Testing editing first category, without saving (back to categories button)
+    @Test
+    public void editFirstCategoryBackToCategoriesTest() {
+        categoriesPage.editFirstCategoryWithoutSaving(); 
         
-       // assertTrue("Titles don't match", categoriesPage.getFirstCategoryTitleTd().contains(categoryToBeEdited));
-                //categoriesPage.getFirstCategoryTitleTd().contains("milica")); 
-  
-        assertFalse("Category titles match", categoriesPage.getFirstCategoryTitleTd().contains(categoryToBeEdited));        
-                
+        assertFalse(categoriesPage.isAlertBoxPresent());
     }
     
     
-    //Tesing disabling first category
+//Tesing disabling first category
     @Test
     public void testDisableFirstCategory() {
         String categoryToBeDisabled = categoriesPage.disableFirstCategory();
-        
+      
+        Assume.assumeTrue(categoryToBeDisabled != "");
+              
         assertTrue("Failure - after disabling wrong message appears", categoriesPage.getAlertMessage().contains("has been disabled"));
         assertTrue("Failure - wrong category disabled", categoriesPage.getAlertMessage().contains(categoryToBeDisabled));
     }
     
     
-    //Testing enabling first category
+//Testing enabling first category
     @Test
     public void testEnableFirstCategory() {
         String categoryToBeEnabled = categoriesPage.enableFirstCategory();
+        
+        Assume.assumeTrue(categoryToBeEnabled != "");
         
         assertTrue("Failure - after enabling wrong message appears", categoriesPage.getAlertMessage().contains("has been enabled"));
         assertTrue("Failure - wrong category enabled", categoriesPage.getAlertMessage().contains(categoryToBeEnabled));
@@ -186,28 +224,54 @@ public class CategoriesTest extends BaseTest {
     public void testDisableLastCategory() {
         String categoryToBeDisabled = categoriesPage.disableLastCategory();
         
+        Assume.assumeTrue(categoryToBeDisabled != "");
+        
         assertTrue("Failure - after disabling wrong message appears", categoriesPage.getAlertMessage().contains("has been disabled"));
         assertTrue("Failure - wrong category disabled", categoriesPage.getAlertMessage().contains(categoryToBeDisabled));
     }
     
     
-    //Testing enabling last category
+    //Testing enabling last category - CORRECTED!!!
     @Test
     public void testEnableLastCategory() {
         String categoryToBeEnabled = categoriesPage.enableLastCategory();
+        
+        
+//        List<WebElement> rows = categoriesPage.getAllRows();
+//        WebElement lastRow = rows.get(rows.size() - 1);
+//        categoriesPage.getCategoryFromRow(lastRow);
+//        
+//        System.out.println("Da li stampas ista? " + categoriesPage.getStatusValuesOfCategory(lastRow));
+//        
+        Assume.assumeTrue(categoryToBeEnabled != "");
         
         assertTrue("Failure - after enabling wrong message appears", categoriesPage.getAlertMessage().contains("has been enabled"));
         assertTrue("Failure - wrong category enabled", categoriesPage.getAlertMessage().contains(categoryToBeEnabled));
     }
     
     
-    //Tesing disabling random category
+    
+    
+    //Testing disabling random category
     @Test
     public void testDisableRandomCategory() {
         String categoryToBeDisabled = categoriesPage.disableRandomCategory();
         
+        Assume.assumeTrue(categoryToBeDisabled != "");
+        
         assertTrue("Failure - after disabling wrong message appears", categoriesPage.getAlertMessage().contains("has been disabled"));
         assertTrue("Failure - wrong category disabled", categoriesPage.getAlertMessage().contains(categoryToBeDisabled));
+    }
+    
+    //Testing enabling random category
+    @Test
+    public void testEnableRandomCategory() {
+        String categoryToBeEnabled = categoriesPage.enableRandomCategory();
+        
+        Assume.assumeTrue(categoryToBeEnabled != "");
+        
+        assertTrue("Failure - after enabling wrong message appears", categoriesPage.getAlertMessage().contains("has been enabled"));
+        assertTrue("Failure - wrong category enabled", categoriesPage.getAlertMessage().contains(categoryToBeEnabled));
     }
     
     
