@@ -61,7 +61,7 @@ public class CategoriesTest extends BaseTest {
              
        assertEquals("Failure - Urls don't match", "http://bvtest.school.cubes.rs/", driver.getCurrentUrl());     
        driver.get(Configuration.adminLoginUrl); 
-}    
+    }    
    
     //Testing heading and URL for Dashboard link
     @Test
@@ -79,7 +79,6 @@ public class CategoriesTest extends BaseTest {
         
         assertEquals("Failure - Urls don't match", "http://bvtest.school.cubes.rs/admin/signatures", driver.getCurrentUrl());
         assertEquals("Failure - headings don't match", "Signatures", signaturesPage.getPanelHeading());
-        
     }
     
     //Testing heading and URL for Regions link
@@ -119,9 +118,7 @@ public class CategoriesTest extends BaseTest {
     
           LoginPage loginPage = new LoginPage(driver, wait);
           dashboardPage = loginPage.login();  
-
     }
-    
     
     //Testing Add category button
     @Test
@@ -141,12 +138,8 @@ public class CategoriesTest extends BaseTest {
         categoriesPage.backToCategories();
         
         assertFalse(categoriesPage.isAlertBoxPresent());
-       
-//       assertFalse("Failure - new category is created", categoriesPage.getAlertMessage().contains("milica"));
+    }
       
-     }
-    
-//   
     //Testing reordering first category
     @Test
     public void reorderFirstCategoryTest() {
@@ -161,9 +154,9 @@ public class CategoriesTest extends BaseTest {
         dragAndDrop.perform();
     }
     
-    //Testing reordering sixth category
+    //Testing reordering third category
     @Test
-    public void reorderSixthCategoryTest() {
+    public void reorderThirdCategoryTest() {
          Actions actions = new Actions(driver);
                
         Action dragAndDrop = actions.clickAndHold(categoriesPage.reorderFrom2)
@@ -194,8 +187,7 @@ public class CategoriesTest extends BaseTest {
         assertFalse(categoriesPage.isAlertBoxPresent());
     }
     
-    
-//Tesing disabling first category
+    //Tesing disabling first category
     @Test
     public void testDisableFirstCategory() {
         String categoryToBeDisabled = categoriesPage.disableFirstCategory();
@@ -206,8 +198,7 @@ public class CategoriesTest extends BaseTest {
         assertTrue("Failure - wrong category disabled", categoriesPage.getAlertMessage().contains(categoryToBeDisabled));
     }
     
-    
-//Testing enabling first category
+    //Testing enabling first category
     @Test
     public void testEnableFirstCategory() {
         String categoryToBeEnabled = categoriesPage.enableFirstCategory();
@@ -217,7 +208,6 @@ public class CategoriesTest extends BaseTest {
         assertTrue("Failure - after enabling wrong message appears", categoriesPage.getAlertMessage().contains("has been enabled"));
         assertTrue("Failure - wrong category enabled", categoriesPage.getAlertMessage().contains(categoryToBeEnabled));
     }
-    
     
     //Testing disabling last category
     @Test
@@ -230,27 +220,18 @@ public class CategoriesTest extends BaseTest {
         assertTrue("Failure - wrong category disabled", categoriesPage.getAlertMessage().contains(categoryToBeDisabled));
     }
     
-    
-    //Testing enabling last category - CORRECTED!!!
+    //Testing enabling last category
     @Test
     public void testEnableLastCategory() {
         String categoryToBeEnabled = categoriesPage.enableLastCategory();
-        
-        
-//        List<WebElement> rows = categoriesPage.getAllRows();
-//        WebElement lastRow = rows.get(rows.size() - 1);
-//        categoriesPage.getCategoryFromRow(lastRow);
 //        
-//        System.out.println("Da li stampas ista? " + categoriesPage.getStatusValuesOfCategory(lastRow));
+//      System.out.println("Da li stampas ista? " + categoriesPage.getStatusValuesOfCategory(lastRow));
 //        
         Assume.assumeTrue(categoryToBeEnabled != "");
         
         assertTrue("Failure - after enabling wrong message appears", categoriesPage.getAlertMessage().contains("has been enabled"));
         assertTrue("Failure - wrong category enabled", categoriesPage.getAlertMessage().contains(categoryToBeEnabled));
     }
-    
-    
-    
     
     //Testing disabling random category
     @Test
@@ -274,8 +255,6 @@ public class CategoriesTest extends BaseTest {
         assertTrue("Failure - wrong category enabled", categoriesPage.getAlertMessage().contains(categoryToBeEnabled));
     }
     
-    
-    
     //Testing delete option of first category
     @Test
     public void testDeleteFirstCategory() {
@@ -283,7 +262,7 @@ public class CategoriesTest extends BaseTest {
         Assume.assumeTrue(categoryToBeDeleted != "");
                
         assertTrue("Failure - after deletion wrong message appears", categoriesPage.getAlertMessage().contains("has been successfully deleted"));
-        assertTrue("Failure - wrong signature deleted", categoriesPage.getAlertMessage().contains(categoryToBeDeleted));
+        assertTrue("Failure - wrong category deleted", categoriesPage.getAlertMessage().contains(categoryToBeDeleted));
     }
     
     //Testing delete option of last category
@@ -293,9 +272,8 @@ public class CategoriesTest extends BaseTest {
         Assume.assumeTrue(categoryToBeDeleted != "");
                
         assertTrue("Failure - after deletion wrong message appears", categoriesPage.getAlertMessage().contains("has been successfully deleted"));
-        assertTrue("Failure - wrong signature deleted", categoriesPage.getAlertMessage().contains(categoryToBeDeleted));
+        assertTrue("Failure - wrong category deleted", categoriesPage.getAlertMessage().contains(categoryToBeDeleted));
     }
-    
     
     //Testing delete option of random category
     @Test
@@ -304,7 +282,7 @@ public class CategoriesTest extends BaseTest {
         Assume.assumeTrue(categoryToBeDeleted != "");
                
         assertTrue("Failure - after deletion wrong message appears", categoriesPage.getAlertMessage().contains("has been successfully deleted"));
-        assertTrue("Failure - wrong signature deleted", categoriesPage.getAlertMessage().contains(categoryToBeDeleted));
+        assertTrue("Failure - wrong category deleted", categoriesPage.getAlertMessage().contains(categoryToBeDeleted));
     }
     
     
